@@ -31,6 +31,12 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// JsonWebToken
+	implementation 'io.jsonwebtoken:jjwt:latest.integration'
+	implementation 'io.jsonwebtoken:jjwt-api:latest.integration'
+	implementation 'io.jsonwebtoken:jjwt-impl:latest.integration'
+	implementation 'io.jsonwebtoken:jjwt-jackson:latest.integration'
 }
 
 tasks.named('test') {
