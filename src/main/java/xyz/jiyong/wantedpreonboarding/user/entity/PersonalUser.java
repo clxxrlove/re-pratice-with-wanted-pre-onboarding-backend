@@ -14,7 +14,7 @@ import java.util.List;
 @DiscriminatorValue("PERSONAL_USER")
 public class PersonalUser extends User {
 
-    @OneToMany(mappedBy = "account_id")
+    @OneToMany(mappedBy = "accountId")
     private List<Application> applications;
 
     @Builder
