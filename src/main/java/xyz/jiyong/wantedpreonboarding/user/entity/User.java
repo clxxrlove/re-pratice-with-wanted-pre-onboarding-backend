@@ -2,10 +2,9 @@ package xyz.jiyong.wantedpreonboarding.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 
 @Entity
@@ -17,15 +16,19 @@ public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
     private String name;
 
-    @CreatedDate
     @Column(name = "created_at")
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(name = "deleted_at")
+    @CreationTimestamp
     private LocalDateTime deletedAt;
 
     protected User() {
@@ -35,13 +38,5 @@ public abstract class User {
         this.email = email;
         this.password = password;
         this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(name, user.name);
     }
 }
