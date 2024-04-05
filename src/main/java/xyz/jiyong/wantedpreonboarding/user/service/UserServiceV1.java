@@ -3,6 +3,7 @@ package xyz.jiyong.wantedpreonboarding.user.service;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import xyz.jiyong.wantedpreonboarding.global.exception.CustomErrorCode;
 import xyz.jiyong.wantedpreonboarding.global.exception.CustomException;
 import xyz.jiyong.wantedpreonboarding.user.dto.UserRegistrationDto;
@@ -14,14 +15,14 @@ import xyz.jiyong.wantedpreonboarding.user.repository.PersonalUserRepository;
 import xyz.jiyong.wantedpreonboarding.user.repository.UserRepository;
 
 @Service
-public class UserService {
+public class UserServiceV1 {
 
     private final EnterpriseUserRepository enterpriseUserRepository;
     private final PersonalUserRepository personalUserRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(EnterpriseUserRepository enterpriseUserRepository, PersonalUserRepository personalUserRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceV1(EnterpriseUserRepository enterpriseUserRepository, PersonalUserRepository personalUserRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.enterpriseUserRepository = enterpriseUserRepository;
         this.personalUserRepository = personalUserRepository;
         this.userRepository = userRepository;
@@ -54,5 +55,14 @@ public class UserService {
             return UserDto.from(user);
         }
         return null;
+    }
+
+    @Transactional
+    public void destroyUser(long id) {
+        try {
+            userRepository.destroy(id);
+        } catch (Exception e) {
+            throw new CustomException(CustomErrorCode.BAD_REQUEST);
+        }
     }
 }
