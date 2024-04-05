@@ -11,16 +11,12 @@ import xyz.jiyong.wantedpreonboarding.global.exception.CustomErrorCode;
 @AllArgsConstructor
 public class CustomErrorResponse {
 
-    private int status;
-    private String code;
     private String statusMessage;
 
     public static ResponseEntity<CustomErrorResponse> toResponseEntity(CustomErrorCode e) {
         return ResponseEntity
                 .status(e.getHttpStatus())
                 .body(CustomErrorResponse.builder()
-                        .status(e.getHttpStatus().value())
-                        .code(e.name())
                         .statusMessage(e.getDetailMessage())
                         .build()
                 );
