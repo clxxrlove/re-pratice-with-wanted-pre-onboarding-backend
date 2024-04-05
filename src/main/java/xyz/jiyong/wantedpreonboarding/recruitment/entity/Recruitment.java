@@ -4,6 +4,8 @@ package xyz.jiyong.wantedpreonboarding.recruitment.entity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.util.StringUtils;
+import xyz.jiyong.wantedpreonboarding.recruitment.dto.RecruitmentDto;
 import xyz.jiyong.wantedpreonboarding.user.entity.EnterpriseUser;
 
 import java.util.List;
@@ -39,5 +41,20 @@ public class Recruitment {
     }
 
     protected Recruitment() {
+    }
+
+    public void updatePartially(RecruitmentDto recruitmentDto) {
+        if (StringUtils.hasText(recruitmentDto.content())) {
+            this.content = recruitmentDto.content();
+        }
+        if (StringUtils.hasText(recruitmentDto.position())) {
+            this.position = recruitmentDto.position();
+        }
+        if (recruitmentDto.guarantee() != 0) {
+            this.guarantee = recruitmentDto.guarantee();
+        }
+        if (StringUtils.hasText(recruitmentDto.techStack())) {
+            this.techStack = recruitmentDto.techStack();
+        }
     }
 }

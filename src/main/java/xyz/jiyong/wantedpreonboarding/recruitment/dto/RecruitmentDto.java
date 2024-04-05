@@ -1,6 +1,7 @@
 package xyz.jiyong.wantedpreonboarding.recruitment.dto;
 
 import lombok.Builder;
+import org.springframework.data.domain.Page;
 import xyz.jiyong.wantedpreonboarding.recruitment.entity.Recruitment;
 import xyz.jiyong.wantedpreonboarding.user.entity.EnterpriseUser;
 
@@ -18,6 +19,10 @@ public record RecruitmentDto(
                 .content(recruitment.getContent())
                 .techStack(recruitment.getTechStack())
                 .build();
+    }
+
+    public static Page<RecruitmentDto> fromPageable(Page<Recruitment> recruitments) {
+        return recruitments.map(RecruitmentDto::from);
     }
 
     public static Recruitment toEntity(RecruitmentDto recruitmentDto, EnterpriseUser enterpriseUser) {
