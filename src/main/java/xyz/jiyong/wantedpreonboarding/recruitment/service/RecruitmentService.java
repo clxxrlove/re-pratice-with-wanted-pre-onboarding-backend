@@ -1,7 +1,6 @@
 package xyz.jiyong.wantedpreonboarding.recruitment.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +14,8 @@ import xyz.jiyong.wantedpreonboarding.recruitment.repository.RecruitmentReposito
 import xyz.jiyong.wantedpreonboarding.user.entity.EnterpriseUser;
 import xyz.jiyong.wantedpreonboarding.user.repository.EnterpriseUserRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class RecruitmentService {
@@ -26,7 +27,7 @@ public class RecruitmentService {
         return RecruitmentDto.from(getRecruitmentFromId(id));
     }
 
-    public Page<RecruitmentDto> getRecruitments(int page, int size) {
+    public List<RecruitmentDto> getRecruitments(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return RecruitmentDto.fromPageable(recruitmentRepository.findAllByOrderByIdDesc(pageRequest));
     }

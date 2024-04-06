@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import xyz.jiyong.wantedpreonboarding.recruitment.entity.Recruitment;
 import xyz.jiyong.wantedpreonboarding.user.entity.EnterpriseUser;
 
+import java.util.List;
+
 @Builder
 public record RecruitmentDto(
         String position,
@@ -21,8 +23,10 @@ public record RecruitmentDto(
                 .build();
     }
 
-    public static Page<RecruitmentDto> fromPageable(Page<Recruitment> recruitments) {
-        return recruitments.map(RecruitmentDto::from);
+    public static List<RecruitmentDto> fromPageable(Page<Recruitment> recruitments) {
+        return recruitments
+                .map(RecruitmentDto::from)
+                .stream().toList();
     }
 
     public static Recruitment toEntity(RecruitmentDto recruitmentDto, EnterpriseUser enterpriseUser) {
