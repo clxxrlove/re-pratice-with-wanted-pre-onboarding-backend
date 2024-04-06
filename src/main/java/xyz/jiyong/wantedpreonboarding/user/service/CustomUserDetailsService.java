@@ -17,6 +17,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND_ERROR));
+                .orElseThrow(() -> new CustomException(CustomErrorCode.BAD_CREDENTIAL));
     }
 }
