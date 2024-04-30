@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import xyz.jiyong.wantedpreonboarding.global.response.CustomErrorResponse;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class GlobalExceptionHandler {
      * Spring Security Error:
      *  -> JwtAuthenticationFilter, UsernamePasswordAuthenticationFilter
      * */
-    @ExceptionHandler({ AuthenticationException.class })
+    @ExceptionHandler({ AccessDeniedException.class, AuthenticationException.class })
     protected ResponseEntity<CustomErrorResponse> handleAuthenticationException() {
         return CustomErrorResponse.toResponseEntityFromCustomCode(CustomErrorCode.UNAUTHORIZED);
     }
