@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import xyz.jiyong.wantedpreonboarding.user.entity.Role;
 
 @Configuration
 @EnableWebSecurity
@@ -38,6 +39,8 @@ public class SpringSecurity {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v2/user/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v2/recruitment").hasRole(Role.ENTERPRISE_USER.name())
+                        .requestMatchers(HttpMethod.PATCH, "/api/v2/recruitment").hasRole(Role.ENTERPRISE_USER.name())
                         .anyRequest().authenticated())
                 .formLogin(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

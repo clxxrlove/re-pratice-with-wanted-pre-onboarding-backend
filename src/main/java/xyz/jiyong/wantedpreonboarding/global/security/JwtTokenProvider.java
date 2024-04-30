@@ -1,14 +1,16 @@
 package xyz.jiyong.wantedpreonboarding.global.security;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,11 +20,13 @@ import xyz.jiyong.wantedpreonboarding.global.exception.InvalidTokenException;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
 
@@ -67,36 +71,19 @@ public class JwtTokenProvider {
                 .build();
     }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parser()
-                    .verifyWith(new SecretKeySpec(key.getEncoded(), key.getAlgorithm()))
-                    .build()
-                    .parse(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public void validateToken(String token) throws JwtException {
+        Jwts.parser()
+                .verifyWith(new SecretKeySpec(key.getEncoded(), key.getAlgorithm()))
+                .build()
+                .parse(token);
     }
 
-    private Claims parseClaims(String accessToken) {
-        try {
-            return Jwts.parser()
-                    .verifyWith(new SecretKeySpec(key.getEncoded(), key.getAlgorithm()))
-                    .build()
-                    .parseClaimsJws(accessToken)
-                    .getBody();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
-        }
-    }
-
-    private String getJwtFromSecurityContext() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getCredentials() != null) {
-            return authentication.getCredentials().toString();
-        }
-        return null;
+    private Claims parseClaims(String accessToken) throws JwtException {
+        return Jwts.parser()
+                .verifyWith(new SecretKeySpec(key.getEncoded(), key.getAlgorithm()))
+                .build()
+                .parseSignedClaims(accessToken)
+                .getPayload();
     }
 
     public Authentication getAuthentication(String accessToken) {
@@ -107,12 +94,10 @@ public class JwtTokenProvider {
         }
 
         // 권한 없이 SimpleGrantedAuthority 사용시 InternalAuthenticationServiceException 발생
-//        Collection<? extends GrantedAuthority> authorities = Arrays.stream(
-//                claims.get("auth").toString().split(","))
-//                .map(SimpleGrantedAuthority::new)
-//                .toList();
-
-        Collection<? extends GrantedAuthority> authorities = Collections.emptyList();
+        Collection<? extends GrantedAuthority> authorities = Arrays.stream(
+                claims.get("auth").toString().split(","))
+                .map(SimpleGrantedAuthority::new)
+                .toList();
 
         UserDetails principal = new User(claims.getSubject(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
