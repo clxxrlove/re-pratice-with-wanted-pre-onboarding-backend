@@ -2,15 +2,19 @@ package xyz.jiyong.wantedpreonboarding.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 
+@Slf4j
 @Entity
 @Getter
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -46,17 +50,18 @@ public abstract class User implements UserDetails {
         this.name = name;
     }
 
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return this.roles.stream()
-//                .map(SimpleGrantedAuthority::new)
-//                .toList();
-//    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        String role = this instanceof PersonalUser ? Role.PERSONAL_USER.name() : Role.ENTERPRISE_USER.name();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+        return authorities;
     }
+
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return Collections.emptyList();
+//    }
 
     @Override
     public String getUsername() {
